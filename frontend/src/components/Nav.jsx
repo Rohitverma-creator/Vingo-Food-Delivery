@@ -68,82 +68,57 @@ const Nav = () => {
   const role = userData?.role?.toLowerCase();
 
   return (
-    <div className="w-full h-[80px] flex items-center justify-between px-[20px] fixed top-0 z-[9999] bg-[#fff9f6] shadow-md">
-
-      {/* Mobile Search */}
-      {showSearch && role === "user" && (
-        <div className="w-[90%] h-[70px] bg-white shadow-xl rounded-lg flex items-center gap-[20px] fixed top-[80px] left-[5%] md:hidden z-[9999]">
-          <div className="flex items-center w-[30%] overflow-hidden gap-[10px] px-[10px] border-r-[2px] border-gray-200">
-            <TbLocationFilled className="w-[25px] h-[25px] text-[#ff4d2d]" />
-            <div className="w-[80%] truncate text-gray-600">
-              {currentCity}
-            </div>
-          </div>
-          <div className="w-[80%] flex items-center gap-[10px]">
-            <RxCross1
-              size={25}
-              className="text-[#ff4d2d] cursor-pointer"
-              onClick={() => setShowSearch(false)}
-            />
-            <input
-              type="text"
-              placeholder="Search delicious food..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              className="px-[10px] text-gray-700 outline-0 w-full"
-            />
-          </div>
-        </div>
-      )}
+    <div className="w-full h-[75px] flex items-center justify-between px-6 fixed top-0 z-[9999] bg-white border-b border-gray-200">
 
       {/* Logo */}
       <h1
-        className="text-3xl font-bold text-[#ff4d2d] cursor-pointer"
+        className="text-2xl md:text-3xl font-extrabold text-red-500 cursor-pointer tracking-wide"
         onClick={() => navigate("/")}
       >
         Vingo
       </h1>
 
-      {/* Desktop Search (Only User) */}
+      {/* Desktop Search */}
       {role === "user" && (
-        <div className="md:w-[60%] lg:w-[40%] h-[70px] bg-white shadow-xl rounded-lg hidden md:flex items-center gap-[20px]">
-          <div className="flex items-center w-[30%] overflow-hidden gap-[10px] px-[10px] border-r-[2px] border-gray-200">
-            <TbLocationFilled className="w-[25px] h-[25px] text-[#ff4d2d]" />
-            <div className="w-[80%] truncate text-gray-600">
-              {currentCity}
-            </div>
-          </div>
-          <div className="w-[80%] flex items-center gap-[10px]">
-            <IoSearchSharp size={25} className="text-[#ff4d2d]" />
-            <input
-              type="text"
-              placeholder="Search delicious food..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              className="px-[10px] text-gray-700 outline-0 w-full"
-            />
-          </div>
+        <div className="hidden md:flex items-center w-[45%] bg-gray-100 rounded-full px-4 py-2 gap-3 transition-all focus-within:bg-white focus-within:shadow-md">
+          <TbLocationFilled className="text-red-500 text-xl" />
+          <span className="text-sm text-gray-600 truncate w-[90px]">
+            {currentCity}
+          </span>
+
+          <div className="h-5 w-[1px] bg-gray-300"></div>
+
+          <IoSearchSharp className="text-gray-500 text-lg" />
+          <input
+            type="text"
+            placeholder="Search food..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="bg-transparent outline-none w-full text-sm"
+          />
         </div>
       )}
 
       {/* Right Section */}
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-6">
 
         {role === "user" && (
           <>
+            {/* Mobile Search Icon */}
             <IoSearchSharp
-              size={25}
-              className="text-[#ff4d2d] md:hidden cursor-pointer"
+              size={22}
+              className="text-gray-600 md:hidden cursor-pointer"
               onClick={() => setShowSearch(true)}
             />
 
+            {/* Cart */}
             <div
               className="relative cursor-pointer"
               onClick={() => navigate("/cart")}
             >
-              <MdShoppingCart size={25} className="text-[#ff4d2d]" />
+              <MdShoppingCart size={24} className="text-gray-700" />
               {totalCartItems > 0 && (
-                <span className="absolute right-[-8px] top-[-10px] bg-red-500 text-white text-xs w-[18px] h-[18px] rounded-full flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-semibold">
                   {totalCartItems}
                 </span>
               )}
@@ -151,9 +126,9 @@ const Nav = () => {
           </>
         )}
 
-        {/* Profile Icon */}
+        {/* Profile Circle */}
         <div
-          className="w-[40px] h-[40px] rounded-full flex items-center justify-center bg-[#ff4d2d] text-white text-[18px] shadow-xl font-semibold cursor-pointer"
+          className="w-10 h-10 rounded-full bg-red-500 text-white flex items-center justify-center font-semibold shadow-md cursor-pointer hover:scale-105 transition"
           onClick={() => setShowInfo((prev) => !prev)}
         >
           {userData?.fullName?.slice(0, 1)?.toUpperCase() || "U"}
@@ -161,27 +136,25 @@ const Nav = () => {
 
         {/* Dropdown */}
         {showInfo && (
-          <div className="absolute top-[80px] right-[20px] w-[220px] bg-white shadow-2xl rounded-xl p-4 flex flex-col gap-3 z-[9999]">
+          <div className="absolute top-[75px] right-6 w-[230px] bg-white shadow-xl rounded-xl p-4 flex flex-col gap-3 border border-gray-100">
 
-            <div className="text-[16px] font-semibold truncate">
+            <div className="text-sm font-semibold truncate text-gray-800">
               {userData?.fullName}
             </div>
 
-            {/* USER OPTIONS */}
             {role === "user" && (
               <div
                 onClick={() => {
                   navigate("/my-orders");
                   setShowInfo(false);
                 }}
-                className="flex items-center gap-2 text-gray-700 hover:text-[#ff4d2d] cursor-pointer font-medium"
+                className="flex items-center gap-2 text-gray-600 hover:text-red-500 cursor-pointer text-sm"
               >
                 <IoReceiptSharp size={18} />
                 My Orders
               </div>
             )}
 
-            {/* OWNER OPTIONS */}
             {role === "owner" && (
               <>
                 <div
@@ -189,7 +162,7 @@ const Nav = () => {
                     navigate("/owner/dashboard");
                     setShowInfo(false);
                   }}
-                  className="cursor-pointer hover:text-[#ff4d2d]"
+                  className="text-sm text-gray-600 hover:text-red-500 cursor-pointer"
                 >
                   Dashboard
                 </div>
@@ -199,7 +172,7 @@ const Nav = () => {
                     navigate("/my-orders");
                     setShowInfo(false);
                   }}
-                  className="flex items-center gap-2 text-gray-700 hover:text-[#ff4d2d] cursor-pointer font-medium"
+                  className="flex items-center gap-2 text-gray-600 hover:text-red-500 cursor-pointer text-sm"
                 >
                   <IoReceiptSharp size={18} />
                   Shop Orders
@@ -207,10 +180,10 @@ const Nav = () => {
 
                 <div
                   onClick={() => {
-                    navigate("/owner/add-item");
+                    navigate("/add-item");
                     setShowInfo(false);
                   }}
-                  className="flex items-center gap-2 text-gray-700 hover:text-[#ff4d2d] cursor-pointer font-medium"
+                  className="flex items-center gap-2 text-gray-600 hover:text-red-500 cursor-pointer text-sm"
                 >
                   <FaPlus size={18} />
                   Add Item
@@ -220,14 +193,32 @@ const Nav = () => {
 
             <div
               onClick={handleLogout}
-              className="text-[#ff4d2d] font-semibold cursor-pointer mt-2"
+              className="text-red-500 text-sm font-semibold cursor-pointer mt-2 border-t pt-2"
             >
               Log out
             </div>
-
           </div>
         )}
       </div>
+
+      {/* Mobile Search Panel */}
+      {showSearch && role === "user" && (
+        <div className="fixed top-[75px] left-0 w-full bg-white shadow-md p-4 flex items-center gap-3 md:hidden">
+          <RxCross1
+            size={20}
+            className="text-red-500 cursor-pointer"
+            onClick={() => setShowSearch(false)}
+          />
+          <input
+            type="text"
+            placeholder="Search food..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="outline-none w-full text-sm"
+          />
+        </div>
+      )}
+
     </div>
   );
 };
