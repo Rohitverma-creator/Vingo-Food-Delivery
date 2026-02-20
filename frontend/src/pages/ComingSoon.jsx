@@ -1,6 +1,14 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const ComingSoon = () => {
+  const navigate = useNavigate();
+
+  const handleDemoClick = () => {
+    navigate("/?demo=lucknow");
+    window.location.reload();
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-between px-10 md:px-20 bg-[#f6e7e5] overflow-hidden">
       {/* LEFT CONTENT */}
@@ -14,9 +22,16 @@ const ComingSoon = () => {
         </h2>
 
         <p className="text-gray-600 mt-6 text-lg">
-          We’re expanding to your area very soon. Get ready for fast and
-          reliable food delivery with Vingo.
+          We’re expanding to your area very soon. Currently live in Lucknow.
         </p>
+
+        {/* DEMO BUTTON */}
+        <button
+          onClick={handleDemoClick}
+          className="mt-8 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg shadow-lg transition duration-300"
+        >
+          View Demo
+        </button>
       </div>
 
       {/* RIGHT SIDE SHAPE */}
