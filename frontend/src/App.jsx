@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { io } from "socket.io-client";
 
@@ -16,6 +16,8 @@ import OrderPlace from "./pages/OrderPlace";
 import MyOrders from "./pages/MyOrders";
 import TrackOrderPage from "./pages/TrackOrderPage";
 import Shop from "./pages/Shop";
+import OrderDeliveredSuccessfully from "./pages/OrderDeliveredSuccessfully";
+import ComingSoon from "./pages/ComingSoon";
 
 import useGetCurrentUser from "./hooks/useGetCurrentUser";
 import useGetCity from "./hooks/useGetCity";
@@ -24,22 +26,30 @@ import useGetItemByCity from "./hooks/useGetItemsByCity";
 import useGetMyOrders from "./hooks/useGetMyOrder";
 import useUpdateLocation from "./hooks/useUpdateLocation";
 
-import { setSocket } from "./redux/userSlice";
-import OrderDeliveredSuccessfully from "./pages/OrderDeliveredSuccessfully";
-import ComingSoon from "./pages/ComingSoon";
+import { setSocket, setCurrentCity } from "./redux/userSlice";
 
 export const serverUrl = "https://vingo-backend-lmj2.onrender.com";
-
 const App = () => {
+  const dispatch = useDispatch();
+  const { userData, socket } = useSelector((state) => state.user);
+
+  const [searchParams] = useSearchParams();
+  const demoCity = searchParams.get("demo");
+
+  
+  useEffect(() => {
+    if (demoCity === "lucknow") {
+      dispatch(setCurrentCity("Lucknow"));
+      window.history.replaceState({}, "", "/"); 
+    }
+  }, [demoCity, dispatch]);
+
   useGetCurrentUser();
-  useGetCity();
+  useGetCity(demoCity);
   useGetShopByCity();
   useGetItemByCity();
   useGetMyOrders();
   useUpdateLocation();
-
-  const dispatch = useDispatch();
-  const { userData, socket, addMyOrder } = useSelector((state) => state.user);
 
   useEffect(() => {
     if (!socket) {
@@ -69,10 +79,14 @@ const App = () => {
         path="/forgot-password"
         element={!userData ? <ForgotPassword /> : <Navigate to="/" />}
       />
+
       <Route
         path="/"
-        element={userData ? <Home /> : <Navigate to="/signin" />}
+        element={
+          userData ? <Home /> : <ComingSoon />
+        }
       />
+
       <Route
         path="/create-edit-shop"
         element={userData ? <CreateEditShop /> : <Navigate to="/signin" />}
