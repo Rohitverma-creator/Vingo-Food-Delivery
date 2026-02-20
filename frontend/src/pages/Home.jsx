@@ -1,8 +1,8 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
-import UserDashboard from "../components/userDashboard";
-import OwnerDashboard from "../components/ownerDashboard";
+import UserDashboard from "../components/UserDashboard";
+import OwnerDashboard from "../components/OwnerDashboard";
 import DeliveryBoy from "../components/DeliveryBoy";
 
 const Home = () => {
