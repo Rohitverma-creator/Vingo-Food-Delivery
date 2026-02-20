@@ -36,7 +36,7 @@ export const signup = async (req, res) => {
     const token = await genToken(user._id);
     res.cookie("token", token, {
       secure: false,
-      sameSite: "strict",
+      sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
       httpOnly: true,
     });
@@ -66,7 +66,7 @@ export const signin = async (req, res) => {
     const token = await genToken(user._id);
     res.cookie("token", token, {
       secure: false,
-      sameSite: "strict",
+      sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
       httpOnly: true,
     });
@@ -84,7 +84,7 @@ export const signout = async (req, res) => {
     res.clearCookie("token", {
       httpOnly: true,
       sameSite: "none",
-      secure: true, 
+      secure: true,
     });
 
     return res.status(200).json({
@@ -98,7 +98,6 @@ export const signout = async (req, res) => {
     });
   }
 };
-
 
 export const sendOtp = async (req, res) => {
   try {
@@ -200,7 +199,7 @@ export const googleAuth = async (req, res) => {
 
     res.cookie("token", token, {
       secure: false, // prod me true
-      sameSite: "strict",
+      sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
       httpOnly: true,
     });

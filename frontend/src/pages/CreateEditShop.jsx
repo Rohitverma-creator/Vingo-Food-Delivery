@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { FaUtensils } from "react-icons/fa";
 import axios from "axios";
 import { serverUrl } from "../App";
-import { setMyShopData } from "../redux/ownerSlice"
+import { setMyShopData } from "../redux/ownerSlice";
+import Shop from "./Shop";
 
 const CreateEditShop = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const CreateEditShop = () => {
 
   const { myShopData } = useSelector((state) => state.owner);
   const { currentCity, currentState, currentAddress } = useSelector(
-    (state) => state.user
+    (state) => state.user,
   );
 
   const [name, setName] = useState("");
@@ -22,8 +23,8 @@ const CreateEditShop = () => {
   const [state, setState] = useState("");
   const [frontendImage, setFrontendImage] = useState("");
   const [backendImage, setBackendImage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
- 
   useEffect(() => {
     if (myShopData) {
       setName(myShopData.name || "");
@@ -49,6 +50,7 @@ const CreateEditShop = () => {
     e.preventDefault();
 
     try {
+      setLoading(true);
       const formData = new FormData();
       formData.append("name", name);
       formData.append("city", city);
@@ -62,10 +64,11 @@ const CreateEditShop = () => {
       const result = await axios.post(
         `${serverUrl}/api/shop/create-edit`,
         formData,
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       dispatch(setMyShopData(result.data));
+      setLoading(false);
       navigate("/");
     } catch (error) {
       console.log(error.response?.data || error.message);
@@ -137,7 +140,7 @@ const CreateEditShop = () => {
             />
 
             <button className="w-full bg-[#ff4d2d] text-white py-3 rounded-xl">
-              Save
+              {loading ? <ClipLoader size={20} color="#ffffff" /> : "Save Shop"}
             </button>
           </form>
         </div>

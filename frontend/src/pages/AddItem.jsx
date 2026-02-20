@@ -5,6 +5,7 @@ import { serverUrl } from "../App";
 import { useDispatch } from "react-redux";
 import { setMyShopData } from "../redux/ownerSlice";
 import { useNavigate } from "react-router-dom";
+import { ClipLoader } from "react-spinners";
 
 const AddItem = () => {
   const dispatch = useDispatch();
@@ -16,7 +17,7 @@ const AddItem = () => {
   const [foodType, setFoodType] = useState("veg");
   const [frontendImage, setFrontendImage] = useState(null);
   const [backendImage, setBackendImage] = useState(null);
-
+  const [loading,setLoading]=useState(false)
   const categories = [
     "Snacks",
     "Main Course",
@@ -48,6 +49,7 @@ const AddItem = () => {
     }
 
     try {
+      setLoading(true)
       const formData = new FormData();
       formData.append("name", name);
       formData.append("price", price);
@@ -62,6 +64,7 @@ const AddItem = () => {
       );
 
       dispatch(setMyShopData(result.data));
+      setLoading(false)
       navigate("/");
     } catch (error) {
       console.log("ADD ITEM FRONTEND ERROR:", error);
@@ -140,7 +143,7 @@ const AddItem = () => {
           type="submit"
           className="w-full mt-6 bg-[#ff4d2d] text-white py-2 rounded-full"
         >
-          Add Item
+        {loading ? <ClipLoader size={20} color="#ffffff" /> : "Add Item"}
         </button>
       </form>
     </div>

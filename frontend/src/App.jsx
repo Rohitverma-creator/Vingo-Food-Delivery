@@ -28,7 +28,7 @@ import { setSocket } from "./redux/userSlice";
 import OrderDeliveredSuccessfully from "./pages/OrderDeliveredSuccessfully";
 import ComingSoon from "./pages/ComingSoon";
 
-export const serverUrl = "https://vingo-backend-cqic.onrender.com";
+export const serverUrl = "http://localhost:8000";
 
 const App = () => {
   useGetCurrentUser();
