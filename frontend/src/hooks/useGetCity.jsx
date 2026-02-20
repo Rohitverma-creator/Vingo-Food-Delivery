@@ -8,22 +8,21 @@ import {
 } from "../redux/userSlice";
 import { setAddress, setLocation } from "../redux/mapSlice";
 
-const useGetCity = () => {
+const useGetCity = (demoCity) => {
   const dispatch = useDispatch();
   const apiKey = import.meta.env.VITE_GEOAPIKEY;
 
   useEffect(() => {
-    if (!navigator.geolocation) {
-      console.log("Geolocation not supported");
-      return;
-    }
+    if (demoCity === "lucknow") return;
+   
+
+    if (!navigator.geolocation) return;
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         try {
           const { latitude, longitude } = position.coords;
 
-         
           dispatch(setLocation({ lat: latitude, lon: longitude }));
 
           const result = await axios.get(
@@ -37,12 +36,10 @@ const useGetCity = () => {
               },
             }
           );
-          
 
           const data = result?.data?.results?.[0];
           if (!data) return;
 
-         
           const city =
             data.city ||
             data.town ||
@@ -53,31 +50,20 @@ const useGetCity = () => {
 
           dispatch(setCurrentCity(city));
           dispatch(setcurrentState(data.state || ""));
-
-          const fullAddress =
-            data.formatted ||
-            data.address_line1 ||
-            "";
-
-          dispatch(setCurrentAddress(fullAddress));
-
-        
-          dispatch(setAddress(fullAddress));
-
+          dispatch(setCurrentAddress(data.formatted || ""));
+          dispatch(setAddress(data.formatted || ""));
         } catch (error) {
-          console.error("Geoapify API error:", error);
+          console.error(error);
         }
       },
-      (error) => {
-        console.error("Geolocation error:", error.message);
-      },
+      () => {},
       {
         enableHighAccuracy: true,
         timeout: 15000,
         maximumAge: 0,
       }
     );
-  }, [dispatch, apiKey]);
+  }, [dispatch, apiKey, demoCity]);
 };
 
 export default useGetCity;
