@@ -4,10 +4,11 @@ import { FaCircleChevronLeft } from "react-icons/fa6";
 import { FaChevronCircleRight } from "react-icons/fa";
 import CategoryCard from "./CategoryCard";
 import { categories } from "../category";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import FoodCard from "./FoodCard";
 import { useNavigate } from "react-router-dom";
 import ComingSoon from "../pages/ComingSoon";
+import { addToCart } from "../redux/userSlice";
 
 const UserDashboard = () => {
   const cateScrollRef = useRef(null);
@@ -26,16 +27,15 @@ const UserDashboard = () => {
   const searchItems = useSelector((state) => state.user.searchItems);
   const role = useSelector((state) => state.user.userData?.role);
 
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // loading control
   useEffect(() => {
     if (shopInMyCity !== undefined) {
       setLoading(false);
     }
   }, [shopInMyCity]);
 
-  // update items
   useEffect(() => {
     setUpdatedItemList(itemsInMyCity);
   }, [itemsInMyCity]);
@@ -49,20 +49,16 @@ const UserDashboard = () => {
     }
   };
 
-  // scroll helper
   const updateButton = (ref, setLeft, setRight) => {
     const el = ref.current;
     if (!el) return;
-
     const canScroll = el.scrollWidth > el.clientWidth + 5;
-
     setLeft(canScroll && el.scrollLeft > 0);
     setRight(canScroll && el.scrollLeft + el.clientWidth < el.scrollWidth);
   };
 
   const scrollHandler = (ref, direction) => {
     if (!ref.current) return;
-
     ref.current.scrollBy({
       left: direction === "left" ? -200 : 200,
       behavior: "smooth",
@@ -72,7 +68,6 @@ const UserDashboard = () => {
   useEffect(() => {
     const cateEl = cateScrollRef.current;
     const shopEl = shopScrollRef.current;
-
     if (!cateEl || !shopEl) return;
 
     updateButton(cateScrollRef, setShowLeftCateButton, setShowRightCateButton);
@@ -82,14 +77,14 @@ const UserDashboard = () => {
       updateButton(
         cateScrollRef,
         setShowLeftCateButton,
-        setShowRightCateButton,
+        setShowRightCateButton
       );
 
     const handleShopScroll = () =>
       updateButton(
         shopScrollRef,
         setShowLeftShopButton,
-        setShowRightShopButton,
+        setShowRightShopButton
       );
 
     cateEl.addEventListener("scroll", handleCateScroll);
@@ -109,29 +104,40 @@ const UserDashboard = () => {
     <div className="w-screen min-h-screen flex flex-col gap-4 items-center bg-[#fff9f6] overflow-y-auto">
       <Nav />
 
-      {/* SEARCH RESULT */}
       {searchItems && searchItems.length > 0 && (
         <div className="absolute top-[90px] left-0 w-full bg-white shadow-xl rounded-xl p-4 z-[999] max-h-[400px] overflow-y-auto">
           {searchItems.map((item) => (
             <div
               key={item._id}
-              className="flex items-center gap-4 p-3 hover:bg-gray-100 rounded-lg cursor-pointer transition"
+              className="flex items-center justify-between gap-4 p-3 hover:bg-gray-100 rounded-lg transition"
             >
-              <img
-                src={item.image}
-                alt={item.name}
-                className="w-14 h-14 object-cover rounded-lg"
-              />
-              <div className="flex flex-col">
-                <span className="font-semibold text-gray-800">{item.name}</span>
-                <span className="text-sm text-gray-500">{item.category}</span>
+              <div className="flex items-center gap-4">
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-14 h-14 object-cover rounded-lg"
+                />
+                <div className="flex flex-col">
+                  <span className="font-semibold text-gray-800">
+                    {item.name}
+                  </span>
+                  <span className="text-sm text-gray-500">
+                    {item.category}
+                  </span>
+                </div>
               </div>
+
+              <button
+                onClick={() => dispatch(addToCart(item))}
+                className="bg-[#ff4d2d] text-white px-3 py-1 rounded-lg text-sm hover:scale-105 transition"
+              >
+                Add
+              </button>
             </div>
           ))}
         </div>
       )}
 
-      {/* CATEGORY SECTION */}
       <div className="w-full max-w-6xl flex flex-col gap-4 items-start p-2">
         <h1 className="text-gray-800 text-xl sm:text-2xl font-semibold">
           Inspiration for your first order
@@ -151,7 +157,6 @@ const UserDashboard = () => {
         </div>
       </div>
 
-      {/* SHOP SECTION */}
       <div className="w-full max-w-6xl flex flex-col gap-4 items-start p-2">
         <h1 className="text-gray-800 text-xl sm:text-2xl font-semibold">
           Best Shop in {currentCity}
@@ -183,7 +188,6 @@ const UserDashboard = () => {
         </div>
       </div>
 
-      {/* FOOD SECTION */}
       <div className="w-full max-w-6xl flex flex-col gap-3 items-start p-2">
         <h1 className="text-gray-800 text-xl sm:text-2xl font-semibold">
           Suggested Food Items
