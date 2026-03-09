@@ -14,15 +14,13 @@ const useGetCity = (demoCity) => {
 
   useEffect(() => {
 
-    
     if (demoCity === "lucknow") {
-      localStorage.setItem("demoCity", "lucknow");
+      sessionStorage.setItem("demoCity", "lucknow");
     }
 
-    const savedDemo = localStorage.getItem("demoCity");
+    const demo = sessionStorage.getItem("demoCity");
 
- 
-    if (savedDemo === "lucknow") {
+    if (demo === "lucknow") {
       dispatch(setCurrentCity("Lucknow"));
       dispatch(setcurrentState("Uttar Pradesh"));
       dispatch(setCurrentAddress("Lucknow, Uttar Pradesh, India"));
