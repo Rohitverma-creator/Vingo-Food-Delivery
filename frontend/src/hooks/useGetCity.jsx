@@ -13,8 +13,22 @@ const useGetCity = (demoCity) => {
   const apiKey = import.meta.env.VITE_GEOAPIKEY;
 
   useEffect(() => {
-    if (demoCity === "lucknow") return;
-   
+
+    
+    if (demoCity === "lucknow") {
+      localStorage.setItem("demoCity", "lucknow");
+    }
+
+    const savedDemo = localStorage.getItem("demoCity");
+
+ 
+    if (savedDemo === "lucknow") {
+      dispatch(setCurrentCity("Lucknow"));
+      dispatch(setcurrentState("Uttar Pradesh"));
+      dispatch(setCurrentAddress("Lucknow, Uttar Pradesh, India"));
+      dispatch(setAddress("Lucknow, Uttar Pradesh, India"));
+      return;
+    }
 
     if (!navigator.geolocation) return;
 
