@@ -29,6 +29,7 @@ import useUpdateLocation from "./hooks/useUpdateLocation";
 import { setSocket, setCurrentCity } from "./redux/userSlice";
 
 export const serverUrl = "https://vingo-backend-lmj2.onrender.com";
+
 const App = () => {
   const dispatch = useDispatch();
   const { userData, socket } = useSelector((state) => state.user);
@@ -36,21 +37,23 @@ const App = () => {
   const [searchParams] = useSearchParams();
   const demoCity = searchParams.get("demo");
 
-  
   useEffect(() => {
     if (demoCity === "lucknow") {
       dispatch(setCurrentCity("Lucknow"));
-      window.history.replaceState({}, "", "/"); 
+      window.history.replaceState({}, "", "/");
     }
   }, [demoCity, dispatch]);
 
   useGetCurrentUser();
-  useGetCity(demoCity);
-  useGetShopByCity();
-  useGetItemByCity();
-  useGetMyOrders();
-  useUpdateLocation();
 
+  useGetCity(demoCity);
+
+  useGetShopByCity(userData);
+  useGetItemByCity(userData);
+  useGetMyOrders(userData);
+  useUpdateLocation(userData);
+
+  // socket connection
   useEffect(() => {
     if (!socket) {
       const socketInstance = io(serverUrl, {
@@ -60,6 +63,7 @@ const App = () => {
     }
   }, [socket, dispatch]);
 
+  // identify user
   useEffect(() => {
     if (!socket || !userData?._id) return;
     socket.emit("identity", { userId: userData._id });
@@ -67,68 +71,84 @@ const App = () => {
 
   return (
     <Routes>
+      {/* Public Routes */}
       <Route
         path="/signup"
         element={!userData ? <Signup /> : <Navigate to="/" />}
       />
+
       <Route
         path="/signin"
         element={!userData ? <SignIn /> : <Navigate to="/" />}
       />
+
       <Route
         path="/forgot-password"
         element={!userData ? <ForgotPassword /> : <Navigate to="/" />}
       />
 
+      {/* Home */}
       <Route
         path="/"
-        element={
-          userData ? <Home /> : <ComingSoon />
-        }
+        element={userData ? <Home /> : <Navigate to="/signin" />}
       />
+
+      {/* Protected Routes */}
 
       <Route
         path="/create-edit-shop"
         element={userData ? <CreateEditShop /> : <Navigate to="/signin" />}
       />
+
       <Route
         path="/add-item"
         element={userData ? <AddItem /> : <Navigate to="/signin" />}
       />
+
       <Route
         path="/edit-item/:itemId"
         element={userData ? <EditItem /> : <Navigate to="/signin" />}
       />
+
       <Route
         path="/cart"
         element={userData ? <CartPage /> : <Navigate to="/signin" />}
       />
+
       <Route
         path="/checkout"
         element={userData ? <CheckOut /> : <Navigate to="/signin" />}
       />
+
       <Route
         path="/order-placed"
         element={userData ? <OrderPlace /> : <Navigate to="/signin" />}
       />
+
       <Route
         path="/my-orders"
         element={userData ? <MyOrders /> : <Navigate to="/signin" />}
       />
+
       <Route
         path="/track-order/:orderId"
         element={userData ? <TrackOrderPage /> : <Navigate to="/signin" />}
       />
+
       <Route
         path="/shop/:shopId"
         element={userData ? <Shop /> : <Navigate to="/signin" />}
       />
+
       <Route
         path="/order-delivered"
         element={
           userData ? <OrderDeliveredSuccessfully /> : <Navigate to="/signin" />
         }
       />
+
+      {/* Coming Soon */}
+      <Route path="/coming-soon" element={<ComingSoon />} />
     </Routes>
   );
 };
